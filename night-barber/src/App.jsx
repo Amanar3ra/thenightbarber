@@ -78,18 +78,45 @@ function App() {
       </nav>
 
       {/* Hero Section */}
-      <section style={{
-        position: 'relative',
-        height: '100vh',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        textAlign: 'center',
-        color: '#fff',
-        backgroundImage: 'url(https://images.unsplash.com/photo-1521737604893-d14cc237f11d?w=1920&h=1080&fit=crop)',
-        backgroundSize: 'cover',
-        backgroundPosition: 'center'
-      }}>
+   {/* Hero Section with Video Background */}
+<section style={{
+  position: 'relative',
+  height: '100vh',
+  display: 'flex',
+  alignItems: 'center',
+  justifyContent: 'center',
+  textAlign: 'center',
+  color: '#fff',
+  overflow: 'hidden'
+}}>
+  {/* Video Background */}
+  <video
+    style={{
+      position: 'absolute',
+      top: 0,
+      left: 0,
+      width: '100%',
+      height: '100%',
+      objectFit: 'cover',
+      zIndex: 1
+    }}
+    src="/hero-video.mp4"
+    autoPlay
+    loop
+    muted
+    playsInline
+  ></video>
+
+  {/* Dark Overlay */}
+  <div style={{
+    position: 'absolute',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: 'rgba(0, 0, 0, 0.6)',
+    zIndex: 2
+  }}></div>
         <div style={{
           position: 'absolute',
           top: 0,
