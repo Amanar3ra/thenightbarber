@@ -5,22 +5,22 @@ function App() {
   const teamMembers = [
     {
       name: "Rishabh",
-      image: "/team1.jpg",
+      image: "https://images.unsplash.com/photo-1507003211169-0a1dd7228f2d?w=400&h=400&fit=crop&crop=face",
       description: "Lead Master Barber specializing in precision fades and contemporary styles. 8+ years of experience transforming looks with artistic flair."
     },
     {
       name: "Preet",
-      image: "/team2.jpg", 
+      image: "https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?w=400&h=400&fit=crop&crop=face", 
       description: "Beard sculpting expert and traditional wet shave specialist. Known for creating perfectly groomed looks that enhance natural features."
     },
     {
       name: "Alex",
-      image: "/team3.jpg",
+      image: "https://images.unsplash.com/photo-1500648767791-00dcc994a43e?w=400&h=400&fit=crop&crop=face",
       description: "Creative stylist focused on modern trends and texture work. Passionate about helping clients express their unique personality through hair."
     },
     {
       name: "Jordan",
-      image: "/team4.jpg",
+      image: "https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?w=400&h=400&fit=crop&crop=face",
       description: "Classic barber with expertise in timeless cuts and hot towel treatments. Dedicated to the traditional craft of barbering excellence."
     }
   ];
