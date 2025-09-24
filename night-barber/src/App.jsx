@@ -1,6 +1,42 @@
-import React from "react";
+import React, { useState } from "react";
+import emailjs from "emailjs-com";
+
 
 function App() {
+
+  const [formData, setFormData] = useState({
+  name: "",
+  email: "",
+  message: ""
+  });
+
+  const [status, setStatus] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({ ...formData, [e.target.name]: e.target.value });
+  };
+
+  const sendEmail = (e) => {
+    e.preventDefault();
+
+    emailjs
+      .send(
+        "service_bobx6kb",  // service ID (Gmail)
+        "template_fyi752s",  // template ID
+        formData,
+        "aFNe-rGiXI1q92wJE"    // public key
+      )
+      .then(
+        () => {
+          setStatus("✅ Message sent successfully!");
+          setFormData({ name: "", email: "", message: "" });
+        },
+        () => {
+          setStatus("❌ Failed to send message. Please try again.");
+        }
+      );
+  };
+
   // Team members data with individual descriptions
   const teamMembers = [
     {
@@ -55,7 +91,7 @@ function App() {
             padding: 0,
             gap: '32px'
           }}>
-            {['About', 'Team', 'Services', 'FAQ', 'Contact'].map((item) => (
+            {['About', 'Team', 'Services', 'Contact'].map((item) => (
               <li key={item}>
                 <a 
                   href={`#${item.toLowerCase()}`}
@@ -377,43 +413,59 @@ function App() {
         </div>
       </section>
 
-      {/* FAQ Section */}
-      <section id="faq" style={{
-        padding: '64px 0',
-        backgroundColor: '#1f2937',
-        color: '#fff'
-      }}>
-        <div style={{ maxWidth: '800px', margin: '0 auto', padding: '0 24px' }}>
-          <h2 style={{
-            fontSize: '36px',
-            fontWeight: 'bold',
-            color: '#facc15',
-            marginBottom: '24px',
-            textAlign: 'center'
-          }}>
-            FAQ
-          </h2>
-          <div style={{ display: 'flex', flexDirection: 'column', gap: '24px' }}>
-            {[
-              { q: "Do I need an appointment?", a: "Yes, we recommend booking in advance to secure your spot." },
-              { q: "What payment methods do you accept?", a: "We accept credit, debit, and digital payments." },
-              { q: "Are walk-ins allowed?", a: "Yes, but availability is not guaranteed." }
-            ].map((faq, i) => (
-              <div key={i} style={{ borderLeft: '4px solid #facc15', paddingLeft: '16px' }}>
-                <h3 style={{
-                  fontSize: '18px',
-                  fontWeight: '600',
-                  color: '#facc15',
-                  marginBottom: '8px'
-                }}>
-                  {faq.q}
-                </h3>
-                <p>{faq.a}</p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
+      {/* Contact U Section */}
+      <section id="contact" style={{ padding: "64px 24px", backgroundColor: "#000", color: "#fff", textAlign: "center" }}>
+        <h2 style={{ fontSize: "36px", color: "#facc15", marginBottom: "24px" }}>Contact Us</h2>
+
+  <form
+    style={{ maxWidth: "500px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "16px" }}
+    onSubmit={sendEmail}
+  >
+    <input
+      type="text"
+      name="name"
+      placeholder="Your Name"
+      value={formData.name}
+      onChange={handleChange}
+      required
+      style={{ padding: "12px", borderRadius: "8px" }}
+    />
+    <input
+      type="email"
+      name="email"
+      placeholder="Your Email"
+      value={formData.email}
+      onChange={handleChange}
+      required
+      style={{ padding: "12px", borderRadius: "8px" }}
+    />
+    <textarea
+      name="message"
+      placeholder="Your Message"
+      rows="4"
+      value={formData.message}
+      onChange={handleChange}
+      required
+      style={{ padding: "12px", borderRadius: "8px" }}
+    ></textarea>
+    <button
+      type="submit"
+      style={{
+        backgroundColor: "#facc15",
+        color: "#000",
+        padding: "12px",
+        borderRadius: "8px",
+        fontWeight: "bold"
+      }}
+    >
+      Send Message
+    </button>
+  </form>
+
+  {status && <p style={{ marginTop: "16px", color: "#facc15", fontWeight: "600" }}>{status}</p>}
+</section>
+
+
 
       {/* Footer */}
       <footer id="footer" style={{
@@ -425,7 +477,7 @@ function App() {
         <p style={{ color: '#facc15', fontWeight: 'bold', fontSize: '20px', marginBottom: '16px' }}>
           The Night Barber
         </p>
-        <p>123 Main Street, Halifax, NS</p>
+        <p>Halifax, NS</p>
         <div style={{
           display: 'flex',
           justifyContent: 'center',
