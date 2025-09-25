@@ -1,41 +1,8 @@
-import React, { useState } from "react";
-import emailjs from "emailjs-com";
+import React from "react";
+import Contact from './components/Contact'
 
 
 function App() {
-
-  const [formData, setFormData] = useState({
-  name: "",
-  email: "",
-  message: ""
-  });
-
-  const [status, setStatus] = useState("");
-
-  const handleChange = (e) => {
-    setFormData({ ...formData, [e.target.name]: e.target.value });
-  };
-
-  const sendEmail = (e) => {
-    e.preventDefault();
-
-    emailjs
-      .send(
-        "service_bobx6kb",  // service ID (Gmail)
-        "template_fyi752s",  // template ID
-        formData,
-        "aFNe-rGiXI1q92wJE"    // public key
-      )
-      .then(
-        () => {
-          setStatus("✅ Message sent successfully!");
-          setFormData({ name: "", email: "", message: "" });
-        },
-        () => {
-          setStatus("❌ Failed to send message. Please try again.");
-        }
-      );
-  };
 
   // Team members data with individual descriptions
   const teamMembers = [
@@ -415,55 +382,11 @@ function App() {
 
       {/* Contact U Section */}
       <section id="contact" style={{ padding: "64px 24px", backgroundColor: "#000", color: "#fff", textAlign: "center" }}>
-        <h2 style={{ fontSize: "36px", color: "#facc15", marginBottom: "24px" }}>Contact Us</h2>
+        {/* <h2 style={{ fontSize: "36px", color: "#facc15", marginBottom: "24px" }}>Contact Us</h2> */}
 
-  <form
-    style={{ maxWidth: "500px", margin: "0 auto", display: "flex", flexDirection: "column", gap: "16px" }}
-    onSubmit={sendEmail}
-  >
-    <input
-      type="text"
-      name="name"
-      placeholder="Your Name"
-      value={formData.name}
-      onChange={handleChange}
-      required
-      style={{ padding: "12px", borderRadius: "8px" }}
-    />
-    <input
-      type="email"
-      name="email"
-      placeholder="Your Email"
-      value={formData.email}
-      onChange={handleChange}
-      required
-      style={{ padding: "12px", borderRadius: "8px" }}
-    />
-    <textarea
-      name="message"
-      placeholder="Your Message"
-      rows="4"
-      value={formData.message}
-      onChange={handleChange}
-      required
-      style={{ padding: "12px", borderRadius: "8px" }}
-    ></textarea>
-    <button
-      type="submit"
-      style={{
-        backgroundColor: "#facc15",
-        color: "#000",
-        padding: "12px",
-        borderRadius: "8px",
-        fontWeight: "bold"
-      }}
-    >
-      Send Message
-    </button>
-  </form>
-
-  {status && <p style={{ marginTop: "16px", color: "#facc15", fontWeight: "600" }}>{status}</p>}
-</section>
+            <Contact />
+  
+      </section>
 
 
 
