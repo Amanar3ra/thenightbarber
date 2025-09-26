@@ -1,4 +1,6 @@
 import React from "react";
+import { BrowserRouter as Router, Routes, Route, Link } from "react-router-dom";
+import BookingRoute from "./routes/BookingRoute";
 import Contact from './components/Contact'
 
 
@@ -29,7 +31,13 @@ function App() {
   ];
 
   return (
-    <div style={{ backgroundColor: '#000', color: '#facc15', fontFamily: 'sans-serif', minHeight: '100vh' }}>
+    <Router>
+      <Routes>
+        {/* Homepage */}
+        <Route
+          path="/"
+          element={
+            <div style={{ backgroundColor: '#000', color: '#facc15', fontFamily: 'sans-serif', minHeight: '100vh' }}>
       {/* Navbar */}
       <nav style={{
         position: 'fixed',
@@ -120,14 +128,6 @@ function App() {
     backgroundColor: 'rgba(0, 0, 0, 0.6)',
     zIndex: 2
   }}></div>
-        <div style={{
-          position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          backgroundColor: 'rgba(0, 0, 0, 0.6)'
-        }}></div>
         
         <div style={{ position: 'relative', zIndex: 10 }}>
           <h1 style={{ fontSize: '48px', fontWeight: 'bold', marginBottom: '16px' }}>
@@ -136,30 +136,31 @@ function App() {
           <p style={{ fontSize: '20px', marginBottom: '24px' }}>
             Where style meets perfection
           </p>
-          <a
-            href="#booking"
-            style={{
-              backgroundColor: '#facc15',
-              color: '#000',
-              padding: '12px 24px',
-              borderRadius: '8px',
-              fontWeight: '600',
-              textDecoration: 'none',
-              display: 'inline-block',
-              transition: 'all 0.3s',
-              boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
-            }}
-            onMouseOver={(e) => {
-              e.target.style.backgroundColor = '#eab308';
-              e.target.style.transform = 'scale(1.05)';
-            }}
-            onMouseOut={(e) => {
-              e.target.style.backgroundColor = '#facc15';
-              e.target.style.transform = 'scale(1)';
-            }}
-          >
-            Book Now
-          </a>
+          <Link
+  to="/booking"
+  style={{
+    backgroundColor: '#facc15',
+    color: '#000',
+    padding: '12px 24px',
+    borderRadius: '8px',
+    fontWeight: '600',
+    textDecoration: 'none',
+    display: 'inline-block',
+    transition: 'all 0.3s',
+    boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)'
+  }}
+  onMouseOver={(e) => {
+    e.target.style.backgroundColor = '#eab308';
+    e.target.style.transform = 'scale(1.05)';
+  }}
+  onMouseOut={(e) => {
+    e.target.style.backgroundColor = '#facc15';
+    e.target.style.transform = 'scale(1)';
+  }}
+>
+  Book Now
+</Link>
+
         </div>
       </section>
 
@@ -382,7 +383,7 @@ function App() {
 
       {/* Contact U Section */}
       <section id="contact" style={{ padding: "64px 24px", backgroundColor: "#000", color: "#fff", textAlign: "center" }}>
-        {/* <h2 style={{ fontSize: "36px", color: "#facc15", marginBottom: "24px" }}>Contact Us</h2> */}
+        <h2 style={{ fontSize: "36px", color: "#facc15", marginBottom: "24px" }}>Contact Us</h2>
 
             <Contact />
   
@@ -450,7 +451,14 @@ function App() {
           &copy; 2025 The Night Barber. All Rights Reserved.
         </p>
       </footer>
-    </div>
+                </div>
+          }
+        />
+
+        {/* Booking Page */}
+        <Route path="/booking/*" element={<BookingRoute />} />
+      </Routes>
+    </Router>
   );
 }
 
