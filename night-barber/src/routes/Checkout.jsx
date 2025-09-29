@@ -1,37 +1,71 @@
-import React from "react";
+import React, { useState } from "react";
+import { createBooking } from "../api/bookingApi";
+import { useNavigate } from "react-router-dom";
 
 export default function Checkout() {
+  const navigate = useNavigate();
   const service = JSON.parse(localStorage.getItem("service"));
-  const slot = localStorage.getItem("slot");
+  const slot = localStorage.getItem("slot"); // "YYYY-MM-DD 9:30 AM"
+  const barber = localStorage.getItem("barber") || "Any";
+
+  const [firstName, setFirstName] = useState("");
+  const [lastName, setLastName] = useState("");
+  const [email, setEmail] = useState("");
+  const [phone, setPhone] = useState("");
+  const [loading, setLoading] = useState(false);
+
+  const handleBook = async () => {
+    if (!firstName || !lastName || !email) return alert("Fill name and email");
+    setLoading(true);
+    const [date, ...timeParts] = slot.split(" ");
+    const time = timeParts.join(" ");
+    const payload = {
+      name: `${firstName} ${lastName}`,
+      email,
+      phone,
+      service: service?.name,
+      price: service?.price,
+      barber,
+      date,
+      time
+    };
+
+    const res = await createBooking(payload);
+    setLoading(false);
+    if (res?.booking) {
+      alert("Booking received — check your email");
+      localStorage.removeItem("service");
+      localStorage.removeItem("slot");
+      localStorage.removeItem("barber");
+      navigate("/");
+    } else if (res?.error) {
+      alert(res.error);
+    } else {
+      alert("Booking failed. Try again.");
+    }
+  };
 
   return (
-    <div className="flex p-6">
-      {/* Contact Info */}
-      <div className="flex-1 space-y-4">
-        <h2 className="text-2xl font-bold">Checkout</h2>
-        <input className="w-full border p-2 rounded" placeholder="First name" />
-        <input className="w-full border p-2 rounded" placeholder="Last name" />
-        <input className="w-full border p-2 rounded" placeholder="Email" />
-        <input className="w-full border p-2 rounded" placeholder="Phone number" />
-        <button className="mt-4 w-full py-2 bg-black text-white rounded-lg">
-          Book appointment
+    <div style={{ maxWidth: 1000, margin: "20px auto", padding: 16, display: "flex", gap: 20 }}>
+      <div style={{ flex: 1 }}>
+        <h2>Checkout</h2>
+        <input placeholder="First name" value={firstName} onChange={e=>setFirstName(e.target.value)} style={{ width:"100%", padding:8, marginBottom:8 }} />
+        <input placeholder="Last name" value={lastName} onChange={e=>setLastName(e.target.value)} style={{ width:"100%", padding:8, marginBottom:8 }} />
+        <input placeholder="Email" value={email} onChange={e=>setEmail(e.target.value)} style={{ width:"100%", padding:8, marginBottom:8 }} />
+        <input placeholder="Phone" value={phone} onChange={e=>setPhone(e.target.value)} style={{ width:"100%", padding:8, marginBottom:8 }} />
+
+        <button onClick={handleBook} disabled={loading} style={{ padding: "10px 16px", background: "#000", color:"#fff", borderRadius:8 }}>
+          {loading ? "Booking..." : "Book appointment"}
         </button>
       </div>
 
-      {/* Summary */}
-      <div className="w-1/3 ml-6 border rounded-lg p-4">
-        <h2 className="text-xl font-bold mb-4">Appointment summary</h2>
+      <aside style={{ width: 320, border: "1px solid #eee", borderRadius: 8, padding: 16 }}>
+        <h3>Appointment summary</h3>
+        <p><strong>{service?.name}</strong></p>
         <p>{slot}</p>
-        <div className="flex justify-between mt-2">
-          <span>{service?.name}</span>
-          <span>CA${service?.price}.00</span>
-        </div>
-        <hr className="my-2" />
-        <div className="flex justify-between font-bold">
-          <span>Total</span>
-          <span>CA${service?.price}.00</span>
-        </div>
-      </div>
+        <p>Barber: {barber}</p>
+        <p>Price: CA${service?.price}</p>
+      </aside>
     </div>
   );
 }

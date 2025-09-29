@@ -4,59 +4,40 @@ import { useNavigate } from "react-router-dom";
 const services = [
   { id: 1, name: "Haircut", price: 25, duration: "30 min" },
   { id: 2, name: "Haircut + Beard", price: 40, duration: "45 min" },
-  { id: 3, name: "Beard", price: 15, duration: "20 min" },
+  { id: 3, name: "Beard", price: 15, duration: "20 min" }
 ];
 
 export default function ServiceSelection() {
   const [selected, setSelected] = useState(null);
   const navigate = useNavigate();
 
-  const handleNext = () => {
-    if (selected) {
-      localStorage.setItem("service", JSON.stringify(selected));
-      navigate("/booking/date");
-    }
+  const next = () => {
+    if (!selected) return alert("Select a service");
+    localStorage.setItem("service", JSON.stringify(selected));
+    navigate("/booking/date");
   };
 
   return (
-    <div className="flex p-6">
-      {/* Services */}
-      <div className="flex-1 space-y-4">
-        <h2 className="text-2xl font-bold">Select a Service</h2>
-        {services.map((s) => (
-          <div
-            key={s.id}
-            onClick={() => setSelected(s)}
-            className={`p-4 border rounded-lg cursor-pointer ${
-              selected?.id === s.id ? "border-black" : "border-gray-300"
-            }`}
-          >
-            <h3 className="text-lg font-semibold">{s.name}</h3>
-            <p>CA${s.price}.00 · {s.duration}</p>
+    <div style={{ maxWidth: 1000, margin: "24px auto", padding: 16 }}>
+      <h2 style={{ fontSize: 28, marginBottom: 12 }}>Select a Service</h2>
+      <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(220px,1fr))", gap: 12 }}>
+        {services.map(s => (
+          <div key={s.id} onClick={() => setSelected(s)}
+            style={{
+              padding: 16,
+              borderRadius: 12,
+              cursor: "pointer",
+              border: selected?.id === s.id ? "2px solid #facc15" : "1px solid #e5e7eb",
+              background: selected?.id === s.id ? "#fffbea" : "#fff"
+            }}>
+            <h3 style={{ margin: 0 }}>{s.name}</h3>
+            <p style={{ marginTop: 8 }}>{s.duration} • CA${s.price}</p>
           </div>
         ))}
       </div>
 
-      {/* Summary */}
-      <div className="w-1/3 ml-6 border rounded-lg p-4">
-        <h2 className="text-xl font-bold mb-4">Appointment summary</h2>
-        {selected ? (
-          <div className="flex justify-between">
-            <span>{selected.name}</span>
-            <span>CA${selected.price}.00</span>
-          </div>
-        ) : (
-          <p>No services added yet</p>
-        )}
-        <button
-          disabled={!selected}
-          onClick={handleNext}
-          className={`w-full mt-6 py-2 rounded-lg font-semibold ${
-            selected ? "bg-black text-white" : "bg-gray-200 text-gray-500"
-          }`}
-        >
-          Next →
-        </button>
+      <div style={{ marginTop: 20 }}>
+        <button onClick={next} style={{ padding: "10px 18px", borderRadius: 8, background: "#facc15", border: "none" }}>Next →</button>
       </div>
     </div>
   );

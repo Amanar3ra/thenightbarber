@@ -5,164 +5,113 @@ import dayjs from "dayjs";
 export default function DateSelection() {
   const navigate = useNavigate();
   const service = JSON.parse(localStorage.getItem("service"));
-
   const today = dayjs();
-  // Only next 2 days
-  const dates = Array.from({ length: 2 }, (_, i) => today.add(i, "day"));
+  const dates = Array.from({ length: 3 }, (_, i) => today.add(i + 1, "day")); // next 3 days
 
-  // Generate 30-min slots in a given range
-  const generateSlots = (startHour, endHour) => {
+  const generateRange = (startHour, endHour) => {
     const slots = [];
-    for (let hour = startHour; hour < endHour; hour++) {
-      slots.push(dayjs().hour(hour).minute(0).format("h:mm A"));
-      slots.push(dayjs().hour(hour).minute(30).format("h:mm A"));
+    for (let h = startHour; h <= endHour; h++) {
+      slots.push(dayjs().hour(h).minute(0).format("h:mm A"));
+      if (h !== endHour) slots.push(dayjs().hour(h).minute(30).format("h:mm A"));
     }
     return slots;
   };
 
-  const morningSlots = generateSlots(9, 12);  // 9AM – 12PM
-  const afternoonSlots = generateSlots(12, 16); // 12PM – 4PM
-  const eveningSlots = generateSlots(16, 23);   // 4PM – 11PM
-  eveningSlots.push("11:00 PM");
+  const morning = generateRange(9, 11);     // 9:00 – 11:30
+  const afternoon = generateRange(12, 15);  // 12:00 – 3:30
+  const evening = generateRange(16, 22);    // 4:00 – 10:30
+  evening.push("11:00 PM");
 
   const [selectedDate, setSelectedDate] = useState(dates[0].format("YYYY-MM-DD"));
   const [selectedSlot, setSelectedSlot] = useState(null);
+  const [barber, setBarber] = useState("Rishabh");
 
   const handleNext = () => {
-    if (selectedDate && selectedSlot) {
-      localStorage.setItem("slot", `${selectedDate} ${selectedSlot}`);
-      navigate("/booking/checkout");
-    }
+    if (!selectedSlot) return alert("Choose a time");
+    localStorage.setItem("slot", `${selectedDate} ${selectedSlot}`);
+    localStorage.setItem("barber", barber);
+    navigate("/booking/checkout");
   };
 
   return (
-    <div className="flex flex-col lg:flex-row p-6 gap-8">
-      {/* Left side: calendar + slots */}
-      <div className="flex-1">
-        {/* Date selection like calendar row */}
-        <div className="flex gap-3 mb-6">
-          {dates.map((d) => {
-            const formatted = d.format("YYYY-MM-DD");
+    <div style={{ maxWidth: 1100, margin: "20px auto", padding: 16, display: "flex", gap: 20 }}>
+      <div style={{ flex: 1 }}>
+        <h2>Select date & time</h2>
+
+        <div style={{ display: "flex", gap: 8, marginBottom: 12 }}>
+          {dates.map(d => {
+            const id = d.format("YYYY-MM-DD");
             return (
-              <button
-                key={formatted}
-                onClick={() => setSelectedDate(formatted)}
-                className={`flex flex-col items-center px-4 py-3 rounded-lg border w-16 transition ${
-                  selectedDate === formatted
-                    ? "bg-black text-white border-black"
-                    : "bg-white border-gray-300 hover:bg-gray-100"
-                }`}
-              >
-                <span className="text-sm">{d.format("dd")}</span>
-                <span className="font-semibold">{d.format("D")}</span>
+              <button key={id} onClick={() => setSelectedDate(id)}
+                style={{ padding: "10px 12px", borderRadius: 8, border: selectedDate === id ? "2px solid #facc15" : "1px solid #ddd", background: selectedDate === id ? "#fffbea" : "#fff" }}>
+                <div style={{ fontSize: 12 }}>{d.format("MMM D, YYYY")}</div>
+                <div style={{ fontWeight: 600 }}>{d.format("ddd")}</div>
               </button>
             );
           })}
         </div>
 
-        <p className="text-gray-500 text-sm mb-4">
-          Times are shown in <span className="font-semibold">ADT</span>.
-        </p>
+        <div style={{ marginBottom: 12 }}>
+          <label style={{ display: "block", marginBottom: 6 }}>Barber</label>
+          <select value={barber} onChange={e => setBarber(e.target.value)} style={{ padding: 8, borderRadius: 8 }}>
+            <option>Rishabh</option>
+            <option>Preet</option>
+            <option>Alex</option>
+            <option>Jordan</option>
+          </select>
+        </div>
 
-        <h3 className="font-semibold text-lg mb-4">
-          {dayjs(selectedDate).format("dddd, MMM D, YYYY")}
-        </h3>
+        <h4>Morning </h4>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(120px,1fr))", gap: 8, marginBottom: 12 }}>
+          {morning.map((s, i) => (
+            <button key={i} onClick={() => setSelectedSlot(s)} style={{
+              padding: 12,
+              borderRadius: 8,
+              border: selectedSlot === s ? "2px solid #000" : "1px solid #ddd",
+              background: selectedSlot === s ? "#000" : "#fff",
+              color: selectedSlot === s ? "#fff" : "#000"
+            }}>{s}</button>
+          ))}
+        </div>
 
-        {/* Slots grouped */}
-        <div className="space-y-8">
-          {/* Morning */}
-          <div>
-            <h4 className="font-medium text-gray-700 mb-3">Morning</h4>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {morningSlots.map((slot, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedSlot(slot)}
-                  className={`rounded-xl px-4 py-3 font-medium border transition shadow-sm ${
-                    selectedSlot === slot
-                      ? "bg-black text-white border-black"
-                      : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
-                  }`}
-                >
-                  {slot}
-                </button>
-              ))}
-            </div>
-          </div>
+        <h4>Afternoon </h4>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(120px,1fr))", gap: 8, marginBottom: 12 }}>
+          {afternoon.map((s, i) => (
+            <button key={i} onClick={() => setSelectedSlot(s)} style={{
+              padding: 12,
+              borderRadius: 8,
+              border: selectedSlot === s ? "2px solid #000" : "1px solid #ddd",
+              background: selectedSlot === s ? "#000" : "#fff",
+              color: selectedSlot === s ? "#fff" : "#000"
+            }}>{s}</button>
+          ))}
+        </div>
 
-          {/* Afternoon */}
-          <div>
-            <h4 className="font-medium text-gray-700 mb-3">Afternoon</h4>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {afternoonSlots.map((slot, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedSlot(slot)}
-                  className={`rounded-xl px-4 py-3 font-medium border transition shadow-sm ${
-                    selectedSlot === slot
-                      ? "bg-black text-white border-black"
-                      : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
-                  }`}
-                >
-                  {slot}
-                </button>
-              ))}
-            </div>
-          </div>
+        <h4>Evening </h4>
+        <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fit,minmax(120px,1fr))", gap: 8 }}>
+          {evening.map((s, i) => (
+            <button key={i} onClick={() => setSelectedSlot(s)} style={{
+              padding: 12,
+              borderRadius: 8,
+              border: selectedSlot === s ? "2px solid #000" : "1px solid #ddd",
+              background: selectedSlot === s ? "#000" : "#fff",
+              color: selectedSlot === s ? "#fff" : "#000"
+            }}>{s}</button>
+          ))}
+        </div>
 
-          {/* Evening */}
-          <div>
-            <h4 className="font-medium text-gray-700 mb-3">Evening</h4>
-            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-3">
-              {eveningSlots.map((slot, i) => (
-                <button
-                  key={i}
-                  onClick={() => setSelectedSlot(slot)}
-                  className={`rounded-xl px-4 py-3 font-medium border transition shadow-sm ${
-                    selectedSlot === slot
-                      ? "bg-black text-white border-black"
-                      : "bg-white text-gray-800 border-gray-300 hover:bg-gray-100"
-                  }`}
-                >
-                  {slot}
-                </button>
-              ))}
-            </div>
-          </div>
+        <div style={{ marginTop: 16 }}>
+          <button onClick={handleNext} style={{ padding: "10px 16px", background: "#facc15", border: "none", borderRadius: 8 }}>Next →</button>
         </div>
       </div>
 
-      {/* Right side: summary */}
-      <div className="lg:w-1/3 border rounded-lg p-6 h-fit shadow-md">
-        <h2 className="text-xl font-bold mb-4">Appointment Summary</h2>
-        {service ? (
-          <>
-            <div className="flex justify-between mb-2">
-              <span className="font-medium">{service.name}</span>
-              <span className="font-semibold">CA${service.price}.00</span>
-            </div>
-            {selectedSlot && (
-              <p className="mt-3 text-gray-600">
-                {dayjs(selectedDate).format("MMMM D, YYYY")} at {selectedSlot}
-              </p>
-            )}
-          </>
-        ) : (
-          <p className="text-gray-500">No service selected</p>
-        )}
-
-        <button
-          disabled={!selectedSlot}
-          onClick={handleNext}
-          className={`mt-6 w-full py-3 rounded-lg font-semibold text-lg ${
-            selectedSlot
-              ? "bg-black text-white hover:bg-gray-800"
-              : "bg-gray-200 text-gray-500 cursor-not-allowed"
-          }`}
-        >
-          Next →
-        </button>
-      </div>
+      <aside style={{ width: 320, border: "1px solid #eee", borderRadius: 8, padding: 16 }}>
+        <h3>Summary</h3>
+        <p><strong>{service?.name}</strong></p>
+        <p>{dayjs(selectedDate).format("MMMM D, YYYY")} {selectedSlot || ""}</p>
+        <p>Barber: {barber}</p>
+        <p>Price: CA${service?.price}</p>
+      </aside>
     </div>
   );
 }

@@ -1,18 +1,15 @@
-// src/routes/BookingRoute.jsx
-import {Routes, Route} from 'react-router-dom'
-import ServiceSelection from './ServiceSelection';
-import DateSelection from './DateSelection';
-import Checkout from './Checkout';
-// import BookingForm from "../components/BookingForm";
+import React from "react";
+import { Routes, Route } from "react-router-dom";
+import ServiceSelection from "./ServiceSelection";
+import DateSelection from "./DateSelection";
+import Checkout from "./Checkout";
 
-const BookingRoute = () => {
+export default function BookingRoute() {
   return (
     <Routes>
-        <Route path="/" element={<ServiceSelection />} />
-        <Route path="/date" element={<DateSelection />} />
-        <Route path="/checkout" element={<Checkout />} />
+      <Route index element={<ServiceSelection />} />
+      <Route path="date" element={<DateSelection />} />
+      <Route path="checkout" element={<Checkout />} />
     </Routes>
   );
-};
-
-export default BookingRoute;
+}
